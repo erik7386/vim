@@ -1,0 +1,43 @@
+name: Sync with upstream
+on:
+  schedule:
+    - cron: '35 3 * * *'
+  workflow_dispatch:
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout forked repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+          ref: master
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/vim/vim.git
+      - name: Fetch upstream changes
+        run: git fetch --force --tags upstream
+      - name: Get commit hashes
+        run: |
+          echo "HASH_OLD=$(git rev-parse master^)" >> $GITHUB_ENV
+          echo "HASH_NEW=$(git rev-parse upstream/master)" >> $GITHUB_ENV
+      - name: Rebase changes
+        if: env.HASH_OLD != env.HASH_NEW
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git rebase upstream/master
+      - name: Check workflows
+        if: env.HASH_OLD != env.HASH_NEW
+        run: |
+          cd .github/workflows
+          for i in *.yml; do
+            [[ ${i} != sync.yml ]] && git mv -f ${i} ../old-workflows/${i}
+          done
+          cd -
+      - name: Push to origin
+        if: env.HASH_OLD != env.HASH_NEW
+        run: |
+          git commit --amend --no-edit --reset-author
+          git push --follow-tags --force-with-lease origin master
