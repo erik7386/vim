@@ -390,9 +390,9 @@ CClink = $(CC)
 #CONF_OPT_LUA = --enable-luainterp
 #CONF_OPT_LUA = --enable-luainterp=dynamic
 #CONF_OPT_LUA = --enable-luainterp --with-luajit
-#CONF_OPT_LUA = --enable-luainterp=dynamic --with-luajit
+CONF_OPT_LUA = --enable-luainterp=dynamic --with-luajit
 # Lua installation dir (when not set uses $LUA_PREFIX or defaults to /usr)
-#CONF_OPT_LUA_PREFIX = --with-lua-prefix=/usr/local
+CONF_OPT_LUA_PREFIX = --with-lua-prefix=/usr/local
 
 # MZSCHEME
 # Uncomment this when you want to include the MzScheme interface.
@@ -534,10 +534,10 @@ CClink = $(CC)
 # The default is "huge" for most systems.
 #CONF_OPT_FEAT = --with-features=tiny
 #CONF_OPT_FEAT = --with-features=normal
-#CONF_OPT_FEAT = --with-features=huge
+CONF_OPT_FEAT = --with-features=huge
 
 # COMPILED BY - For including a specific e-mail address for ":version".
-#CONF_OPT_COMPBY = "--with-compiledby=John Doe <JohnDoe@yahoo.com>"
+CONF_OPT_COMPBY = "--with-compiledby=me"
 
 # X WINDOWS DISABLE - For creating a plain Vim without any X11 related fancies
 # (otherwise Vim configure will try to include xterm titlebar access)
@@ -580,7 +580,7 @@ CClink = $(CC)
 # again.
 #CC = cc
 #CC = gcc
-#CC = clang
+CC = clang
 
 # COMPILER FLAGS - change as you please. Either before running {{{1
 # configure or afterwards. For examples see below.
@@ -954,7 +954,7 @@ TOOLS = xxd/xxd$(EXEEXT)
 ### prefix	the top directory for the data (default "/usr/local")
 #
 # Uncomment the next line to install Vim in your home directory.
-#prefix = $(HOME)
+prefix = $(HOME)/.local
 
 ### exec_prefix	is the top directory for the executable (default $(prefix))
 #
