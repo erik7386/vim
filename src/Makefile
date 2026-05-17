@@ -318,7 +318,7 @@ CClink = $(CC)
 # Uncomment this line when you don't want to get the GUI version, although you
 # have GTK and/or Motif.  Also use --without-x if you don't want X11
 # at all.
-#CONF_OPT_GUI = --disable-gui
+CONF_OPT_GUI = --disable-gui
 
 # Uncomment one of these lines if you have that GUI but don't want to use it.
 # The automatic check will use another one that can be found.
@@ -390,9 +390,9 @@ CClink = $(CC)
 #CONF_OPT_LUA = --enable-luainterp
 #CONF_OPT_LUA = --enable-luainterp=dynamic
 #CONF_OPT_LUA = --enable-luainterp --with-luajit
-#CONF_OPT_LUA = --enable-luainterp=dynamic --with-luajit
+CONF_OPT_LUA = --enable-luainterp=dynamic --with-luajit
 # Lua installation dir (when not set uses $LUA_PREFIX or defaults to /usr)
-#CONF_OPT_LUA_PREFIX = --with-lua-prefix=/usr/local
+CONF_OPT_LUA_PREFIX = --with-lua-prefix=/usr/local
 
 # MZSCHEME
 # Uncomment this when you want to include the MzScheme interface.
@@ -486,12 +486,12 @@ CClink = $(CC)
 
 # When building with "huge" features, right-left and Arabic
 # features are enabled.  Use this to disable them.
-#CONF_OPT_MULTIBYTE = --disable-rightleft --disable-arabic
+CONF_OPT_MULTIBYTE = --disable-rightleft --disable-arabic
 
 # NLS - National Language Support
 # Uncomment this when you do not want to support translated messages, even
 # though configure can find support for it.
-#CONF_OPT_NLS = --disable-nls
+CONF_OPT_NLS = --disable-nls
 
 # XIM - X Input Method.  Special character input support for X11 (Chinese,
 # Japanese, special symbols, etc).  Also needed for dead-key support.
@@ -534,17 +534,17 @@ CClink = $(CC)
 # The default is "huge" for most systems.
 #CONF_OPT_FEAT = --with-features=tiny
 #CONF_OPT_FEAT = --with-features=normal
-#CONF_OPT_FEAT = --with-features=huge
+CONF_OPT_FEAT = --with-features=huge
 
 # COMPILED BY - For including a specific e-mail address for ":version".
-#CONF_OPT_COMPBY = "--with-compiledby=John Doe <JohnDoe@yahoo.com>"
+CONF_OPT_COMPBY = "--with-compiledby=me"
 
 # X WINDOWS DISABLE - For creating a plain Vim without any X11 related fancies
 # (otherwise Vim configure will try to include xterm titlebar access)
 # Also disable the GUI above, otherwise it will be included anyway.
 # When both GUI and X11 have been disabled this may save about 15% of the
 # code and make Vim startup quicker.
-#CONF_OPT_X = --without-x
+CONF_OPT_X = --without-x
 
 # X WINDOWS DIRECTORY - specify X directories
 # If configure can't find you X stuff, or if you have multiple X11 derivatives
@@ -580,7 +580,7 @@ CClink = $(CC)
 # again.
 #CC = cc
 #CC = gcc
-#CC = clang
+CC = clang
 
 # COMPILER FLAGS - change as you please. Either before running {{{1
 # configure or afterwards. For examples see below.
@@ -954,7 +954,7 @@ TOOLS = xxd/xxd$(EXEEXT)
 ### prefix	the top directory for the data (default "/usr/local")
 #
 # Uncomment the next line to install Vim in your home directory.
-#prefix = $(HOME)
+prefix = $(HOME)/.local
 
 ### exec_prefix	is the top directory for the executable (default $(prefix))
 #
