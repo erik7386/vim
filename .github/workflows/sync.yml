@@ -1,0 +1,75 @@
+name: Sync with upstream
+
+on:
+  #schedule:
+  #  - cron: "15 23 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+env:
+  TARGET_BRANCH: master
+  UPSTREAM_REPO: vim/vim
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+          #token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 2
+          fetch-tags: true
+          ref: ${{ env.TARGET_BRANCH }}
+
+      - name: Add upstream remote
+        run: |
+          git remote remove upstream 2>/dev/null || true
+          git remote add upstream https://github.com/${UPSTREAM_REPO}.git
+
+      - name: Configure git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch upstream
+        run: |
+          git fetch upstream --prune --tags
+
+      - name: Get commit hashes
+        run: |
+          echo "HASH_OLD=$(git rev-parse ${{ env.TARGET_BRANCH }}^)" >> $GITHUB_ENV
+          echo "HASH_NEW=$(git rev-parse upstream/${{ env.TARGET_BRANCH }})" >> $GITHUB_ENV
+
+      - name: Rebase master onto upstream/master
+        if: env.HASH_OLD != env.HASH_NEW
+        run: |
+          git checkout -f ${{ env.TARGET_BRANCH }}
+          git reset HEAD^
+          rm .github/workflows/*.disabled
+          git restore ".github/workflows/*.yml"
+          git commit -a -m "add fork synch workflow and change configs in Makefile"
+          git rebase ${HASH_NEW}
+
+      - name: Disable original workflows
+        if: env.HASH_OLD != env.HASH_NEW
+        run: |
+          cd ${{ github.workspace }}/.github/workflows
+          for i in *.yml; do
+            [[ "${i}" != "sync.yml" ]] && git mv -f "${i}" "${i}.disabled"
+          done
+          cd -
+          git commit -a --amend --no-edit --reset-author
+
+      - name: Force-with-lease push to fork (master only)
+        if: env.HASH_OLD != env.HASH_NEW
+        env:
+          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+        run: |
+          git push origin ${{ env.TARGET_BRANCH }} --force-with-lease
+          git push origin --force-with-lease --tags
